@@ -1,5 +1,12 @@
 package templates
 
 templ Hello(name string) {
-    <div>Hello, { name }</div>
+	<head>
+		<link rel="stylesheet" href="/css/tailwind.css"/>
+	</head>
+	<body>
+		<div class="text-blue-500">
+			Hello, { name }
+		</div>
+	</body>
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"net/http"
 
 	"github.com/a-h/templ"
@@ -10,16 +11,25 @@ import (
 	"github.com/Noisey96/budget-tracker/templates"
 )
 
+//go:embed static
+var static embed.FS
+
 func main() {
 	// Echo instance
 	e := echo.New()
 
-	// Middleware
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-
 	// Routes
 	e.GET("/", HomeHandler)
+
+	// Post-Router Middleware
+	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+		Root: "static",
+		Filesystem: http.FS(static),
+	}))
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "${method} | ${uri} | ${status}\n",
+	}))
+	e.Use(middleware.Recover())
 
 	// Start server
 	e.Logger.Fatal(e.Start(":1323"))
